@@ -1,4 +1,4 @@
-package com.ailk.phw.bean;
+package com.ailk.phw.utils;
 
 import com.ailk.phw.annotations.JCBytes;
 import com.ailk.phw.enums.JCExpType;

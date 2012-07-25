@@ -1,12 +1,16 @@
 package com.ailk.phw.iface;
 
+import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.fromBytes.ObjectFromBytes;
 import com.ailk.phw.utils.ConstantUtils;
 
 public abstract class FromBytes<T> implements IFromBytes<T> {
 
     private String charset = ConstantUtils.CHARSET_UTF8;
+
     private int offset = 0;
+
+    private JCLenType lenType = JCLenType.Byte;
 
     public void setCharset(String charset) {
         this.charset = charset;
@@ -22,6 +26,14 @@ public abstract class FromBytes<T> implements IFromBytes<T> {
 
     public int getOffset() {
         return offset;
+    }
+
+    public void setLenType(JCLenType lenType) {
+        this.lenType = lenType;
+    }
+
+    public JCLenType getLenType() {
+        return lenType;
     }
 
     public T fromBytes(byte[] b) {

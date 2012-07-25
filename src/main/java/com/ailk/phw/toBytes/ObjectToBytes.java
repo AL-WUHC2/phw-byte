@@ -2,6 +2,7 @@ package com.ailk.phw.toBytes;
 
 import java.lang.reflect.Field;
 
+import com.ailk.phw.annotations.JCToBytesTransient;
 import com.ailk.phw.iface.FieldIterator;
 import com.ailk.phw.iface.ToBytes;
 import com.ailk.phw.utils.JCConvertUtils;
@@ -34,10 +35,12 @@ public class ObjectToBytes extends FieldIterator {
 
     @Override
     protected void processField(Field field) {
-        FieldToBytes fieldToBytes = new FieldToBytes();
-        byte[] bytes = fieldToBytes.toBytes(field, object);
-        builder.append(builder.length() > 1 ? ", " : "").append(fieldToBytes.getDesc());
-        result = JCConvertUtils.mergeByteArray(result, bytes);
+        if (field.getAnnotation(JCToBytesTransient.class) == null) {
+            FieldToBytes fieldToBytes = new FieldToBytes();
+            byte[] bytes = fieldToBytes.toBytes(field, object);
+            builder.append(builder.length() > 1 ? ", " : "").append(fieldToBytes.getDesc());
+            result = JCConvertUtils.mergeByteArray(result, bytes);
+        }
     }
 
     public void setDesc(String desc) {

@@ -11,13 +11,13 @@ public class ListToBytes extends ToBytes<List> {
     @Override
     public byte[] toBytes(List list, int length, byte fill) {
         StringBuilder builder = new StringBuilder();
-        byte size = (byte) list.size();
-        byte[] result = new byte[] { size };
+        int size = list.size();
+        byte[] result = JCConvertUtils.getLenArray(size, getLenType());
         builder.append("[");
         for (Object obj : list) {
             ToBytes toBytes = ToBytesUtils.getToBytes(obj.getClass());
             if (toBytes != null) {
-                FieldAttrUtils attr = new FieldAttrUtils(getType(), length, fill, getCharset());
+                FieldAttrUtils attr = new FieldAttrUtils(getType(), getLenType(), length, fill, getCharset());
                 result = JCConvertUtils.mergeByteArray(result, toBytesWithAttr(toBytes, obj, attr, builder, ", "));
                 continue;
             }

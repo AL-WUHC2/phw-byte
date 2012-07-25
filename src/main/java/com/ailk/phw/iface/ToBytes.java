@@ -1,6 +1,7 @@
 package com.ailk.phw.iface;
 
 import com.ailk.phw.enums.JCExpType;
+import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.toBytes.ObjectToBytes;
 import com.ailk.phw.utils.ConstantUtils;
 import com.ailk.phw.utils.DescUtils;
@@ -13,6 +14,8 @@ public abstract class ToBytes<T> implements IToBytes<T> {
     private String desc;
 
     private JCExpType type = JCExpType.Hex;
+
+    private JCLenType lenType = JCLenType.Byte;
 
     public void setCharset(String charset) {
         this.charset = charset;
@@ -38,6 +41,14 @@ public abstract class ToBytes<T> implements IToBytes<T> {
         return type;
     }
 
+    public void setLenType(JCLenType lenType) {
+        this.lenType = lenType;
+    }
+
+    public JCLenType getLenType() {
+        return lenType;
+    }
+
     public byte[] toBytes(T obj) {
         return toBytes(obj, -1);
     }
@@ -57,6 +68,7 @@ public abstract class ToBytes<T> implements IToBytes<T> {
     protected byte[] toBytesWithAttr(ToBytes toBytes, Object obj, FieldAttrUtils attr,
             StringBuilder builder, String... strings) {
         toBytes.setType(attr.getType());
+        toBytes.setLenType(attr.getLenType());
         toBytes.setCharset(attr.getCharset());
         byte[] result = toBytes.toBytes(obj, attr.getLength(), attr.getFillByte());
         builder.append(toBytes.getDesc());

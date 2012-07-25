@@ -1,8 +1,8 @@
-package com.ailk.phw.bean;
+package com.ailk.phw.utils;
 
 import java.util.List;
 
-public class TestBean {
+public class DemoBean {
 
     private String message;
     private List<String> messages;
@@ -42,7 +42,7 @@ public class TestBean {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        TestBean other = (TestBean) obj;
+        DemoBean other = (DemoBean) obj;
         if (message == null) {
             if (other.message != null) {
                 return false;

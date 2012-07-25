@@ -1,4 +1,4 @@
-package com.ailk.phw.bean;
+package com.ailk.phw.utils;
 
 import java.util.List;
 

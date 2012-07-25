@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ailk.phw.iface.FromBytes;
+import com.ailk.phw.utils.JCConvertUtils;
 
 public class ListFromBytes extends FromBytes<List> {
 
@@ -14,12 +15,13 @@ public class ListFromBytes extends FromBytes<List> {
 
     @Override
     public List fromBytes(byte[] bytes, int length, byte fill, Class genericType) {
-        byte size = bytes[getOffset()];
-        setOffset(getOffset() + 1);
+        int size = JCConvertUtils.getArrayLen(bytes, getOffset(), getLenType());
+        setOffset(getOffset() + JCConvertUtils.getArrayLenOffset(getLenType()));
         ArrayList list = new ArrayList(size);
         for (short i = 0; i < size; ++i) {
             FromBytes fromBytes = FromBytesUtils.getFromBytes(genericType);
             if (fromBytes != null) {
+                fromBytes.setLenType(getLenType());
                 list.add(fromBytesWithType(fromBytes, bytes, length, fill, genericType));
                 continue;
             }

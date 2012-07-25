@@ -6,6 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.ailk.phw.enums.JCExpType;
+import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.utils.ConstantUtils;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -15,6 +16,8 @@ public @interface JCBytes {
     public String name() default ConstantUtils.DEFAULT_FIELD_NAME;
 
     public JCExpType type() default JCExpType.Hex;
+
+    public JCLenType lenType() default JCLenType.Byte;
 
     public int length() default ConstantUtils.DEFAULT_FIELD_LENGTH;
 

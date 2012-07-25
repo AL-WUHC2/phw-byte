@@ -2,7 +2,41 @@ package com.ailk.phw.utils;
 
 import java.util.Arrays;
 
+import org.apache.hadoop.hbase.util.Bytes;
+
+import com.ailk.phw.enums.JCLenType;
+
 public class JCConvertUtils {
+
+    public static byte[] getLenArray(int length, JCLenType type) {
+        if (type == JCLenType.Byte) {
+            return new byte[] { (byte) length };
+        } else if (type == JCLenType.Short) {
+            return Bytes.toBytes((short) length);
+        } else {
+            return Bytes.toBytes(length);
+        }
+    }
+
+    public static int getArrayLen(byte[] bytes, int offset, JCLenType type) {
+        if (type == JCLenType.Byte) {
+            return bytes[offset];
+        } else if (type == JCLenType.Short) {
+            return Bytes.toShort(bytes, offset);
+        } else {
+            return Bytes.toInt(bytes, offset);
+        }
+    }
+
+    public static int getArrayLenOffset(JCLenType type) {
+        if (type == JCLenType.Byte) {
+            return ConstantUtils.PrimitiveOffset.BYTE_OFFSET;
+        } else if (type == JCLenType.Short) {
+            return ConstantUtils.PrimitiveOffset.SHORT_OFFSET;
+        } else {
+            return ConstantUtils.PrimitiveOffset.INT_OFFSET;
+        }
+    }
 
     public static byte[] toBytesArray(byte[] bytes, int length, byte fill) {
         if (length == ConstantUtils.DEFAULT_FIELD_LENGTH) {

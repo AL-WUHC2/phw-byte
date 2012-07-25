@@ -30,8 +30,8 @@ public class FromBytesUtils<T> {
         convertMap.put(String.class, new FromBytes<String>() {
             public String fromBytes(byte[] b, int length, byte fill) {
                 if (length == ConstantUtils.DEFAULT_FIELD_LENGTH) {
-                    length = b[getOffset()];
-                    setOffset(getOffset() + 1);
+                    length = JCConvertUtils.getArrayLen(b, getOffset(), getLenType());
+                    setOffset(getOffset() + JCConvertUtils.getArrayLenOffset(getLenType()));
                 }
                 try {
                     byte[] bytes = JCConvertUtils.splitFixedByteArray(b, getOffset(), length, fill);

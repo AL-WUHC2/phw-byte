@@ -39,8 +39,8 @@ public class ToBytesUtils<T> {
                 objBytes = JCConvertUtils.toBytesArray(objBytes, length, fill);
                 setDesc(DescUtils.toDesc(objBytes, getType(), getCharset()));
                 if (length == ConstantUtils.DEFAULT_FIELD_LENGTH) {
-                    byte len = (byte) objBytes.length;
-                    objBytes = JCConvertUtils.mergeByteArray(new byte[] { len }, objBytes);
+                    int len = objBytes.length;
+                    objBytes = JCConvertUtils.mergeByteArray(JCConvertUtils.getLenArray(len, getLenType()), objBytes);
                 }
                 return objBytes;
             }

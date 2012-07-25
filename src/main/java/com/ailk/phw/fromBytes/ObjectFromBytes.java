@@ -2,6 +2,7 @@ package com.ailk.phw.fromBytes;
 
 import java.lang.reflect.Field;
 
+import com.ailk.phw.annotations.JCFromBytesTransient;
 import com.ailk.phw.iface.FieldIterator;
 import com.ailk.phw.iface.FromBytes;
 import com.ailk.phw.utils.FieldUtils;
@@ -32,10 +33,12 @@ public class ObjectFromBytes extends FieldIterator {
 
     @Override
     protected void processField(Field field) {
-        FieldFromBytes fieldFromBytes = new FieldFromBytes();
-        fieldFromBytes.setOffset(offset);
-        FieldUtils.setFieldValue(field, bean, fieldFromBytes.fromBytes(field, bean, bytes));
-        offset = fieldFromBytes.getOffset();
+        if (field.getAnnotation(JCFromBytesTransient.class) == null) {
+            FieldFromBytes fieldFromBytes = new FieldFromBytes();
+            fieldFromBytes.setOffset(offset);
+            FieldUtils.setFieldValue(field, bean, fieldFromBytes.fromBytes(field, bean, bytes));
+            offset = fieldFromBytes.getOffset();
+        }
     }
 
     public void setOffset(int offset) {
