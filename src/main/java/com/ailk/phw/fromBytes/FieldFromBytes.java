@@ -31,11 +31,11 @@ public class FieldFromBytes extends FromBytes<Field> {
             if (genericType == Void.class) {
                 throw new RuntimeException("Unkown Item Class for field " + field.getName());
             }
-            return fromBytesWithType(new ListFromBytes(), bytes, attr.getLength(), attr.getFillByte(), genericType);
+            return fromBytesWithType(new ListFromBytes(), bytes, attr, genericType);
         }
         FromBytes fromBytes = FromBytesUtils.getFromBytes(fieldType);
         if (fromBytes != null) {
-            return fromBytesWithType(fromBytes, bytes, attr.getLength(), attr.getFillByte(), fieldType);
+            return fromBytesWithType(fromBytes, bytes, attr, fieldType);
         }
         return objectFromBytes(new ObjectFromBytes(), bytes, fieldType);
     }

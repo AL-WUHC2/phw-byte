@@ -3,6 +3,7 @@ package com.ailk.phw.iface;
 import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.fromBytes.ObjectFromBytes;
 import com.ailk.phw.utils.ConstantUtils;
+import com.ailk.phw.utils.FieldAttrUtils;
 
 public abstract class FromBytes<T> implements IFromBytes<T> {
 
@@ -55,9 +56,11 @@ public abstract class FromBytes<T> implements IFromBytes<T> {
         return object;
     }
 
-    protected Object fromBytesWithType(FromBytes fromBytes, byte[] bytes, int length, byte fill, Class clazz) {
+    protected Object fromBytesWithType(FromBytes fromBytes, byte[] bytes, FieldAttrUtils attr, Class clazz) {
+        fromBytes.setCharset(attr.getCharset());
+        fromBytes.setLenType(attr.getLenType());
         fromBytes.setOffset(getOffset());
-        Object object = fromBytes.fromBytes(bytes, length, fill, clazz);
+        Object object = fromBytes.fromBytes(bytes, attr.getLength(), attr.getFillByte(), clazz);
         setOffset(fromBytes.getOffset());
         return object;
     }

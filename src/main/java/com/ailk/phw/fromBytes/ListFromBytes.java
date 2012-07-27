@@ -3,7 +3,9 @@ package com.ailk.phw.fromBytes;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.iface.FromBytes;
+import com.ailk.phw.utils.FieldAttrUtils;
 import com.ailk.phw.utils.JCConvertUtils;
 
 public class ListFromBytes extends FromBytes<List> {
@@ -22,7 +24,8 @@ public class ListFromBytes extends FromBytes<List> {
             FromBytes fromBytes = FromBytesUtils.getFromBytes(genericType);
             if (fromBytes != null) {
                 fromBytes.setLenType(getLenType());
-                list.add(fromBytesWithType(fromBytes, bytes, length, fill, genericType));
+                FieldAttrUtils attr = new FieldAttrUtils(null, JCLenType.Byte, length, fill, getCharset());
+                list.add(fromBytesWithType(fromBytes, bytes, attr, genericType));
                 continue;
             }
             list.add(objectFromBytes(new ObjectFromBytes(), bytes, genericType));

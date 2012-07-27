@@ -2,8 +2,11 @@ package com.ailk.phw.utils;
 
 import java.util.List;
 
+import com.ailk.phw.annotations.JCBytes;
+
 public class DemoBean {
 
+    @JCBytes(charset = ConstantUtils.CHARSET_UNICODE)
     private String message;
     private List<String> messages;
 
