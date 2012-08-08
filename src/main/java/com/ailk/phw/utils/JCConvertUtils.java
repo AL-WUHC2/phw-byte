@@ -71,4 +71,8 @@ public class JCConvertUtils {
         return subBytes(bytes, 0, fixedLength);
     }
 
+    public static byte[] nullBytes() {
+        return Bytes.toBytes((short) 0);
+    }
+
 }
