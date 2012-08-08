@@ -1,8 +1,8 @@
-package com.ailk.phw.toBytes;
+package com.ailk.phw.tobytes;
 
 import java.lang.reflect.Field;
 
-import com.ailk.phw.annotations.JCToBytesTransient;
+import com.ailk.phw.annotations.JCTransient;
 import com.ailk.phw.iface.FieldIterator;
 import com.ailk.phw.iface.ToBytes;
 import com.ailk.phw.utils.JCConvertUtils;
@@ -18,33 +18,38 @@ public class ObjectToBytes extends FieldIterator {
         if (obj == null) {
             throw new RuntimeException("Object is Null");
         }
+
         result = new byte[0];
         builder = new StringBuilder();
         builder.append("{");
-        ToBytes toBytes = ToBytesUtils.getToBytes(obj.getClass());
+        ToBytes toBytes = ToBytesUtils.getPrimitiveToBytes(obj.getClass());
         if (toBytes != null) {
             result = toBytes.toBytes(obj);
-            setDesc(builder.append(toBytes.getDesc()).append("}").toString());
-            return result;
+            builder.append(toBytes.getDesc());
+        } else {
+            object = obj;
+            iterateFields(obj.getClass());
         }
-        object = obj;
-        iterateFields(obj.getClass());
+
         setDesc(builder.append("}").toString());
         return result;
     }
 
     @Override
-    protected void processField(Field field) {
-        if (field.getAnnotation(JCToBytesTransient.class) == null) {
-            FieldToBytes fieldToBytes = new FieldToBytes();
-            byte[] bytes = fieldToBytes.toBytes(field, object);
-            builder.append(builder.length() > 1 ? ", " : "").append(fieldToBytes.getDesc());
-            result = JCConvertUtils.mergeByteArray(result, bytes);
+    protected void processField(Field field, boolean nullable) {
+        if (field.getAnnotation(JCTransient.class) != null) {
+            return;
         }
+
+        FieldToBytes fieldToBytes = new FieldToBytes();
+        byte[] bytes = fieldToBytes.toBytes(field, object, nullable);
+        builder.append(builder.length() > 1 ? ", " : "").append(fieldToBytes.getDesc());
+        result = JCConvertUtils.addBytes(result, bytes);
     }
 
-    public void setDesc(String desc) {
+    public ObjectToBytes setDesc(String desc) {
         this.desc = desc;
+        return this;
     }
 
     public String getDesc() {

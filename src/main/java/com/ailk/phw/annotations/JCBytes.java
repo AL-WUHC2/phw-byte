@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.ailk.phw.enums.JCExpType;
-import com.ailk.phw.enums.JCLenType;
 import com.ailk.phw.utils.ConstantUtils;
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -17,13 +16,11 @@ public @interface JCBytes {
 
     public JCExpType type() default JCExpType.Hex;
 
-    public JCLenType lenType() default JCLenType.Byte;
+    public int lenBytes() default 1;
 
     public int length() default ConstantUtils.DEFAULT_FIELD_LENGTH;
 
-    public boolean useDefaultByte() default true;
-
-    public byte fillByte() default ConstantUtils.DEFAULT_FIELD_FILL;
+    public String fillByte() default "";
 
     public String charset() default ConstantUtils.CHARSET_UTF8;
 

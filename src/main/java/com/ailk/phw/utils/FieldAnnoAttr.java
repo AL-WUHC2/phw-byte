@@ -2,49 +2,57 @@ package com.ailk.phw.utils;
 
 import java.lang.reflect.Field;
 
+import javax.xml.bind.DatatypeConverter;
+
 import com.ailk.phw.annotations.JCBytes;
 import com.ailk.phw.enums.JCExpType;
-import com.ailk.phw.enums.JCLenType;
 
-public class FieldAttrUtils {
+public class FieldAnnoAttr {
 
     private String name;
     private JCExpType type;
-    private JCLenType lenType;
+    private int lenBytes;
     private int length;
-    private boolean useDefaultByte;
     private byte fillByte;
     private String charset;
 
-    public FieldAttrUtils(JCExpType type, JCLenType lenType, int length, byte fillByte, String charset) {
+    public FieldAnnoAttr(JCExpType type, int length, int lenBytes, byte fillByte, String charset) {
         name = "";
         this.type = type;
-        this.lenType = lenType;
+        this.lenBytes = lenBytes;
         this.length = length;
         this.fillByte = fillByte;
         this.charset = charset;
     }
 
-    public FieldAttrUtils(Field field) {
+    public FieldAnnoAttr(JCExpType type, int length, int lenBytes, String fillByte, String charset) {
+        this(type, length, lenBytes, getFillByte(type, fillByte), charset);
+    }
+
+    public FieldAnnoAttr(Field field) {
         JCBytes jcBytes = field.getAnnotation(JCBytes.class);
         if (jcBytes == null) {
             name = ConstantUtils.DEFAULT_FIELD_NAME;
             type = JCExpType.Hex;
-            lenType = JCLenType.Byte;
+            lenBytes = ConstantUtils.DEFAULT_LEN_BYTES;
             length = ConstantUtils.DEFAULT_FIELD_LENGTH;
-            useDefaultByte = true;
             fillByte = ConstantUtils.DEFAULT_FIELD_FILL;
             charset = ConstantUtils.CHARSET_UTF8;
         } else {
             name = jcBytes.name();
             type = jcBytes.type();
-            lenType = jcBytes.lenType();
+            lenBytes = jcBytes.lenBytes();
             length = jcBytes.length();
-            useDefaultByte = jcBytes.useDefaultByte();
-            fillByte = useDefaultByte ? DescUtils.getDefaultFill(type) : jcBytes.fillByte();
+            fillByte = getFillByte(type, jcBytes.fillByte());
             charset = jcBytes.charset();
         }
         name = name.isEmpty() ? field.getName() : name;
+    }
+
+    private static byte getFillByte(JCExpType type, String fillByte) {
+        byte[] fillBytes = DatatypeConverter.parseHexBinary(fillByte);
+        return fillBytes.length > 0 ? fillBytes[0] :
+                type.equals(JCExpType.Hex) ? ConstantUtils.FillByte.FULL_BYTE : ConstantUtils.FillByte.EMPTY_BYTE;
     }
 
     public void setName(String name) {
@@ -63,14 +71,6 @@ public class FieldAttrUtils {
         return type;
     }
 
-    public void setLenType(JCLenType lenType) {
-        this.lenType = lenType;
-    }
-
-    public JCLenType getLenType() {
-        return lenType;
-    }
-
     public void setLength(int length) {
         this.length = length;
     }
@@ -79,12 +79,12 @@ public class FieldAttrUtils {
         return length;
     }
 
-    public void setUseDefaultByte(boolean useDefaultByte) {
-        this.useDefaultByte = useDefaultByte;
+    public void setLenBytes(int lenBytes) {
+        this.lenBytes = lenBytes;
     }
 
-    public boolean getUseDefaultByte() {
-        return useDefaultByte;
+    public int getLenBytes() {
+        return lenBytes;
     }
 
     public void setFillByte(byte fillByte) {

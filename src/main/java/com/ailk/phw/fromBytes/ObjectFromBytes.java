@@ -1,8 +1,8 @@
-package com.ailk.phw.fromBytes;
+package com.ailk.phw.frombytes;
 
 import java.lang.reflect.Field;
 
-import com.ailk.phw.annotations.JCFromBytesTransient;
+import com.ailk.phw.annotations.JCTransient;
 import com.ailk.phw.iface.FieldIterator;
 import com.ailk.phw.iface.FromBytes;
 import com.ailk.phw.utils.FieldUtils;
@@ -18,10 +18,9 @@ public class ObjectFromBytes extends FieldIterator {
         if (bytes.length == offset) {
             return null;
         }
-        FromBytes fromBytes = FromBytesUtils.getFromBytes(clazz);
+        FromBytes fromBytes = FromBytesUtils.getPrimitiveFromBytes(clazz);
         if (fromBytes != null) {
-            fromBytes.setOffset(offset);
-            T object = (T) fromBytes.fromBytes(bytes);
+            T object = (T) fromBytes.setOffset(offset).fromBytes(bytes);
             offset = fromBytes.getOffset();
             return object;
         }
@@ -32,17 +31,19 @@ public class ObjectFromBytes extends FieldIterator {
     }
 
     @Override
-    protected void processField(Field field) {
-        if (field.getAnnotation(JCFromBytesTransient.class) == null) {
-            FieldFromBytes fieldFromBytes = new FieldFromBytes();
-            fieldFromBytes.setOffset(offset);
-            FieldUtils.setFieldValue(field, bean, fieldFromBytes.fromBytes(field, bean, bytes));
-            offset = fieldFromBytes.getOffset();
+    protected void processField(Field field, boolean nullable) {
+        if (field.getAnnotation(JCTransient.class) != null) {
+            return;
         }
+        FieldFromBytes fieldFromBytes = new FieldFromBytes();
+        fieldFromBytes.setOffset(offset);
+        FieldUtils.setFieldValue(field, bean, fieldFromBytes.fromBytes(field, bean, bytes, nullable));
+        offset = fieldFromBytes.getOffset();
     }
 
-    public void setOffset(int offset) {
+    public ObjectFromBytes setOffset(int offset) {
         this.offset = offset;
+        return this;
     }
 
     public int getOffset() {

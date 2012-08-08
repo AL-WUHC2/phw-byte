@@ -1,9 +1,8 @@
 package com.ailk.phw.iface;
 
-import com.ailk.phw.enums.JCLenType;
-import com.ailk.phw.fromBytes.ObjectFromBytes;
+import com.ailk.phw.frombytes.ObjectFromBytes;
 import com.ailk.phw.utils.ConstantUtils;
-import com.ailk.phw.utils.FieldAttrUtils;
+import com.ailk.phw.utils.FieldAnnoAttr;
 
 public abstract class FromBytes<T> implements IFromBytes<T> {
 
@@ -11,30 +10,33 @@ public abstract class FromBytes<T> implements IFromBytes<T> {
 
     private int offset = 0;
 
-    private JCLenType lenType = JCLenType.Byte;
+    private int lenBytes = 1;
 
-    public void setCharset(String charset) {
+    public FromBytes<T> setCharset(String charset) {
         this.charset = charset;
+        return this;
     }
 
     public String getCharset() {
         return charset;
     }
 
-    public void setOffset(int offset) {
+    public FromBytes<T> setOffset(int offset) {
         this.offset = offset;
+        return this;
     }
 
     public int getOffset() {
         return offset;
     }
 
-    public void setLenType(JCLenType lenType) {
-        this.lenType = lenType;
+    public FromBytes<T> setLenBytes(int lenBytes) {
+        this.lenBytes = lenBytes;
+        return this;
     }
 
-    public JCLenType getLenType() {
-        return lenType;
+    public int getLenBytes() {
+        return lenBytes;
     }
 
     public T fromBytes(byte[] b) {
@@ -50,17 +52,14 @@ public abstract class FromBytes<T> implements IFromBytes<T> {
     }
 
     protected Object objectFromBytes(ObjectFromBytes objectFromBytes, byte[] bytes, Class clazz) {
-        objectFromBytes.setOffset(getOffset());
-        Object object = objectFromBytes.fromBytes(bytes, clazz);
+        Object object = objectFromBytes.setOffset(getOffset()).fromBytes(bytes, clazz);
         setOffset(objectFromBytes.getOffset());
         return object;
     }
 
-    protected Object fromBytesWithType(FromBytes fromBytes, byte[] bytes, FieldAttrUtils attr, Class clazz) {
-        fromBytes.setCharset(attr.getCharset());
-        fromBytes.setLenType(attr.getLenType());
-        fromBytes.setOffset(getOffset());
-        Object object = fromBytes.fromBytes(bytes, attr.getLength(), attr.getFillByte(), clazz);
+    protected Object fromBytesWithType(FromBytes fromBytes, byte[] bytes, FieldAnnoAttr anno, Class clazz) {
+        fromBytes.setCharset(anno.getCharset()).setLenBytes(anno.getLenBytes()).setOffset(getOffset());
+        Object object = fromBytes.fromBytes(bytes, anno.getLength(), anno.getFillByte(), clazz);
         setOffset(fromBytes.getOffset());
         return object;
     }

@@ -1,11 +1,10 @@
 package com.ailk.phw.iface;
 
 import com.ailk.phw.enums.JCExpType;
-import com.ailk.phw.enums.JCLenType;
-import com.ailk.phw.toBytes.ObjectToBytes;
+import com.ailk.phw.tobytes.ObjectToBytes;
 import com.ailk.phw.utils.ConstantUtils;
 import com.ailk.phw.utils.DescUtils;
-import com.ailk.phw.utils.FieldAttrUtils;
+import com.ailk.phw.utils.FieldAnnoAttr;
 
 public abstract class ToBytes<T> implements IToBytes<T> {
 
@@ -15,38 +14,42 @@ public abstract class ToBytes<T> implements IToBytes<T> {
 
     private JCExpType type = JCExpType.Hex;
 
-    private JCLenType lenType = JCLenType.Byte;
+    private int lenBytes = 1;
 
-    public void setCharset(String charset) {
+    public ToBytes<T> setCharset(String charset) {
         this.charset = charset;
+        return this;
     }
 
     public String getCharset() {
         return charset;
     }
 
-    public void setDesc(String desc) {
+    public ToBytes<T> setDesc(String desc) {
         this.desc = desc;
+        return this;
     }
 
     public String getDesc() {
         return desc;
     }
 
-    public void setType(JCExpType type) {
+    public ToBytes<T> setType(JCExpType type) {
         this.type = type;
+        return this;
     }
 
     public JCExpType getType() {
         return type;
     }
 
-    public void setLenType(JCLenType lenType) {
-        this.lenType = lenType;
+    public ToBytes<T> setLenBytes(int lenBytes) {
+        this.lenBytes = lenBytes;
+        return this;
     }
 
-    public JCLenType getLenType() {
-        return lenType;
+    public int getLenBytes() {
+        return lenBytes;
     }
 
     public byte[] toBytes(T obj) {
@@ -57,22 +60,19 @@ public abstract class ToBytes<T> implements IToBytes<T> {
         return toBytes(obj, length, (byte) 0xF);
     }
 
-    protected byte[] objectToBytes(ObjectToBytes objectToBytes, Object obj,
-            StringBuilder builder, String... strings) {
+    protected byte[] objectToBytes(ObjectToBytes objectToBytes, Object obj, StringBuilder builder, String... strings) {
         byte[] result = objectToBytes.toBytes(obj);
         builder.append(objectToBytes.getDesc());
         DescUtils.appends(builder, strings);
         return result;
     }
 
-    protected byte[] toBytesWithAttr(ToBytes toBytes, Object obj, FieldAttrUtils attr,
-            StringBuilder builder, String... strings) {
-        toBytes.setType(attr.getType());
-        toBytes.setLenType(attr.getLenType());
-        toBytes.setCharset(attr.getCharset());
-        byte[] result = toBytes.toBytes(obj, attr.getLength(), attr.getFillByte());
+    protected byte[] toBytesWithAttr(ToBytes toBytes, Object obj, FieldAnnoAttr anno,
+            StringBuilder builder, String... describe) {
+        toBytes.setType(anno.getType()).setLenBytes(anno.getLenBytes()).setCharset(anno.getCharset());
+        byte[] result = toBytes.toBytes(obj, anno.getLength(), anno.getFillByte());
         builder.append(toBytes.getDesc());
-        DescUtils.appends(builder, strings);
+        DescUtils.appends(builder, describe);
         return result;
     }
 

@@ -1,9 +1,9 @@
-package com.ailk.phw.toBytes;
+package com.ailk.phw.tobytes;
 
 import java.util.List;
 
 import com.ailk.phw.iface.ToBytes;
-import com.ailk.phw.utils.FieldAttrUtils;
+import com.ailk.phw.utils.FieldAnnoAttr;
 import com.ailk.phw.utils.JCConvertUtils;
 
 public class ListToBytes extends ToBytes<List> {
@@ -12,16 +12,16 @@ public class ListToBytes extends ToBytes<List> {
     public byte[] toBytes(List list, int length, byte fill) {
         StringBuilder builder = new StringBuilder();
         int size = list.size();
-        byte[] result = JCConvertUtils.getLenArray(size, getLenType());
+        byte[] result = JCConvertUtils.getLenArray(size, getLenBytes());
         builder.append("[");
         for (Object obj : list) {
-            ToBytes toBytes = ToBytesUtils.getToBytes(obj.getClass());
+            ToBytes toBytes = ToBytesUtils.getPrimitiveToBytes(obj.getClass());
             if (toBytes != null) {
-                FieldAttrUtils attr = new FieldAttrUtils(getType(), getLenType(), length, fill, getCharset());
-                result = JCConvertUtils.mergeByteArray(result, toBytesWithAttr(toBytes, obj, attr, builder, ", "));
+                FieldAnnoAttr attr = new FieldAnnoAttr(getType(), length, getLenBytes(), fill, getCharset());
+                result = JCConvertUtils.addBytes(result, toBytesWithAttr(toBytes, obj, attr, builder, ", "));
                 continue;
             }
-            result = JCConvertUtils.mergeByteArray(result, objectToBytes(new ObjectToBytes(), obj, builder, ", "));
+            result = JCConvertUtils.addBytes(result, objectToBytes(new ObjectToBytes(), obj, builder, ", "));
         }
         if (size > 0) {
             builder.replace(builder.length() - 2, builder.length(), "]");

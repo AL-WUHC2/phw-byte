@@ -4,6 +4,8 @@ public class ConstantUtils {
 
     public static final String DEFAULT_FIELD_NAME = "";
 
+    public static final int DEFAULT_LEN_BYTES = 1;
+
     public static final int DEFAULT_FIELD_LENGTH = -1;
 
     public static final byte DEFAULT_FIELD_FILL = (byte) 0xFF;

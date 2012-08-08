@@ -1,4 +1,4 @@
-package com.ailk.phw.toBytes;
+package com.ailk.phw.tobytes;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class ToBytesUtils<T> {
 
     private static HashMap<Class, ToBytes> convertMap = new HashMap();
 
-    public static <T> ToBytes<T> getToBytes(Class<T> clazz) {
+    public static <T> ToBytes<T> getPrimitiveToBytes(Class<T> clazz) {
         if (clazz.isPrimitive()) {
             return convertMap.get(ClassUtils.primitiveToWrapper(clazz));
         }
@@ -40,7 +40,7 @@ public class ToBytesUtils<T> {
                 setDesc(DescUtils.toDesc(objBytes, getType(), getCharset()));
                 if (length == ConstantUtils.DEFAULT_FIELD_LENGTH) {
                     int len = objBytes.length;
-                    objBytes = JCConvertUtils.mergeByteArray(JCConvertUtils.getLenArray(len, getLenType()), objBytes);
+                    objBytes = JCConvertUtils.addBytes(JCConvertUtils.getLenArray(len, getLenBytes()), objBytes);
                 }
                 return objBytes;
             }

@@ -1,4 +1,4 @@
-package com.ailk.phw.fromBytes;
+package com.ailk.phw.frombytes;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class FromBytesUtils<T> {
 
     private static HashMap<Class, FromBytes> convertMap = new HashMap();
 
-    public static <T> FromBytes<T> getFromBytes(Class<T> clazz) {
+    public static <T> FromBytes<T> getPrimitiveFromBytes(Class<T> clazz) {
         if (clazz.isPrimitive()) {
             return convertMap.get(ClassUtils.primitiveToWrapper(clazz));
         }
@@ -30,8 +30,8 @@ public class FromBytesUtils<T> {
         convertMap.put(String.class, new FromBytes<String>() {
             public String fromBytes(byte[] b, int length, byte fill) {
                 if (length == ConstantUtils.DEFAULT_FIELD_LENGTH) {
-                    length = JCConvertUtils.getArrayLen(b, getOffset(), getLenType());
-                    setOffset(getOffset() + JCConvertUtils.getArrayLenOffset(getLenType()));
+                    length = JCConvertUtils.getArrayLen(b, getOffset(), getLenBytes());
+                    setOffset(getOffset() + JCConvertUtils.getArrayLenOffset(getLenBytes()));
                 }
                 try {
                     byte[] bytes = JCConvertUtils.splitFixedByteArray(b, getOffset(), length, fill);
